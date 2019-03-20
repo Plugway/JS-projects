@@ -34,19 +34,30 @@ function encode(input)
             {
                 seqStr = input.substring(i);
                 var n = countSeq(seqStr);
-                for(var k = 0; k < Math.floor(n/255)+1; k++)
-                {
-                    if(!(k + 1 < Math.floor(n / 255) + 1))
-                        output += ('#(' + (n % 255).toString() + ')' + seqStr.charAt(0));
-                    else
-                        output += ('#(' + 255 + ')' + seqStr.charAt(0));
-                }
+                if (seqStr.charAt(0) === '#')
+                    for(var k = 0; k < Math.floor(n/255)+1; k++)
+                    {
+                        if(!(k + 1 < Math.floor(n / 255) + 1))
+                            output += ('#(' + (n % 255).toString() + ')' + seqStr.charAt(0));
+                        else
+                            output += ('#(' + 255 + ')' + seqStr.charAt(0));
+                    }
+                else
+                    for(var k = 0; k < Math.floor(n/259)+1; k++)
+                    {
+                        if(!(k + 1 < Math.floor(n / 259) + 1))
+                            output += ('#(' + (n % 255 - 4).toString() + ')' + seqStr.charAt(0));
+                        else
+                            output += ('#(' + 255 + ')' + seqStr.charAt(0));
+                    }
                 i += n;
             }
             else if (input.charAt(i) === '#')
             {
-                output += '#(0)#';
-                i++;
+                seqStr = input.substring(i);
+                n = countSeq(seqStr);
+                output += ('#(' + (n-1).toString() + ')' + seqStr.charAt(0));
+                i += n;
             }
             else
             {
@@ -63,6 +74,6 @@ function encode(input)
     return output;
 }
 
-var input = '';
+var input = 'AAA#AAAA##AAAAA###((((((((############################################################################################################################################################################################################################################################################################################################################################################################';
 var output = encode(input);
 console.log(output);
