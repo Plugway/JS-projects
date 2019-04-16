@@ -1,25 +1,31 @@
 "use strict";
 
-const  maxChar = 1;
+const  maxChar = 1; //Крайне загадочная переменная. Действительно хз зачем она...
 
-function rabinKarpSearch(text, strToFind, prime)
+function rabinKarpSearch(text, strToFind, prime, enabledFunctions, additionalNum)   //Коренная функция
 {
-    var t = new Date();
+/*text - строка, в которой ищем
+* strToFind - ну тут понятно все
+* prime - простое число, чем больше - тем меньше коллизии
+* enabledFunctions - включает вывод инфы в консоль прямо из этой функции
+* additionalNum - добавляет это число если сравниваем несколько строк и !enabledFunctions
+* */
+    if (enabledFunctions)               //Замер времени
+        var t = new Date();
     var textLen = text.length;
     var stringLen = strToFind.length;
-    var comparisonCounter = 0, collisionCounter = 0;
-    var charIndex, stringHash = 0, textHash = 0, h = 1;
+    var comparisonCounter = 0, collisionCounter = 0;    //Счетчики
+    var charIndex, stringHash = 0, textHash = 0, h = 1; //Нужно для корректной работы
 
-    console.log("Длина текста: " + textLen + "\nДлина подстроки: " + stringLen);
-
-    for(var i = 0; i < stringLen; i++)
+    for(var i = 0; i < stringLen; i++)                  //Считаем хеши
     {
         if (i < stringLen - 1)
             h = (h * maxChar) % prime;
         stringHash = (maxChar * stringHash + strToFind.charCodeAt(i)) % prime;
         textHash = (maxChar * textHash + text.charCodeAt(i)) % prime;
     }
-    for (var j = 0; j <= textLen - stringLen; j++)
+
+    for (var j = 0; j <= textLen - stringLen; j++)      //Магия... Куда же без нее :)
     {
         if(stringHash == textHash)
         {
@@ -36,7 +42,10 @@ function rabinKarpSearch(text, strToFind, prime)
             if(charIndex == stringLen)
             {
                 //на j месте начинается строка, совпадающая с паттерном
-                console.log('Найден на ' + j);
+                if (enabledFunctions)
+                    console.log('Найден на ' + j);
+                else
+                    console.log('Найден на ' + (j + additionalNum));
             }
         }
 
@@ -47,15 +56,57 @@ function rabinKarpSearch(text, strToFind, prime)
                 textHash += prime;
         }
     }
-    
-    t = new Date() - t;
-    console.log('Время работы: ' + t + ' мс');
-    console.log('Количество сравнений: ' + comparisonCounter);
-    console.log('Количество коллизий: ' + collisionCounter);
+    if (enabledFunctions)                                   //Выкидываем инфу
+    {
+        t = new Date() - t;
+        console.log("\nДлина текста: " + textLen + "\nДлина подстроки: " + stringLen);
+        console.log('Время работы: ' + t + ' мс');
+        console.log('Количество сравнений: ' + comparisonCounter);
+        console.log('Количество коллизий: ' + collisionCounter);
+        console.log('Всего вхождений: ' + (comparisonCounter - collisionCounter));
+    }
+    else                                                    //Вывод служебной инфы
+    {
+        return { 0:comparisonCounter, 1:collisionCounter};
+    }
+
 }
 
-var string = 'timer';
-var text = 'In the world of microcontrollers (MCUs), sometimes things go wrong. If a program goes haywire or into an infinite loop, it needs a way to check and see if things are still running. In “the old days,” the Windows operating system would occasionally crash (experience a fatal error) and put up what was called the Blue Screen of Death (BSoD) where after it would reboot to prevent damage to the computer such as writing over vital boot code or similarly dangerous events. (The BSoD happens much less often these days.) Embedded systems are different from desktop computers, however, in that there is rarely going to be a human around who will know how to reboot the failing device. Watchdog timers (WDTs), or watchdogs, are circuits external to the processor that can detect and trigger a processor reset (and/or another event) if necessary. The MCU checks in with the watchdog timer at a set interval to show that it’s still on the job. Like a bomb, the watchdog timer is set to count down and if it times out, it resets the MCU, dumping programs and rebooting the MCU and probably other areas in the system that work in tandem with the MCU. But as long as the MCU is running, it will continue to ping the watchdog to reset the timer. It’s best to keep a watchdog external and unreachable by MCU code. A watchdog can be an external component in a separate package from the integrated circuit (IC) that houses the MCU (best), or a watchdog can be found inside the IC but on a different circuit from the MCU, however a WDT that’s dependent on the same resources as the MCU might not be a good idea for obvious reasons.';
-var prime = 2777;
+function longFinder(textArray, strToFind, prime)        //Работает с массивами строк, используя rabinKarpSearch
+{
+    var t1 = new Date();                                //Замер времени работы
+    var resArr;                                         //Служебная переменная
+    var additionalNum = 0;                              //Общий счетчик символов у всех строк,
+    var comparisonCounter = 0;                          //сравнений
+    var collisionCounter = 0;                           //и коллизий
+    for (var i = 0; i < textArray.length; i++)
+    {
+        var text = textArray[i];
+        resArr = rabinKarpSearch(text, strToFind, prime, false, additionalNum);
+        comparisonCounter += resArr[0];
+        collisionCounter += resArr[1];
+        additionalNum += (text.length + 1);
+    }
+    t1 = new Date() - t1;
+    console.log("\nДлина текста: " + (additionalNum - 1) + "\nДлина подстроки: " + strToFind.length);   //Вывод разной инфы
+    console.log('Время работы: ' + t1 + ' мс');
+    console.log('Количество сравнений: ' + comparisonCounter);
+    console.log('Количество коллизий: ' + collisionCounter);
+    console.log('Всего вхождений: ' + (comparisonCounter - collisionCounter));
+}
 
-rabinKarpSearch(text, string, prime);
+//Пример вызова коренной функции поиска
+
+var string = 'ab';
+var text = 'ababbbacbeabab';
+var prime = 2777;
+rabinKarpSearch(text, string, prime, true);
+
+
+//Пример вызова функции, работающей с массивами строк, разделенными переносом строки
+var fs = require('fs');
+var path = "E:\\Scriptshit\\textDocs\\input.txt";
+var string = 'timer';
+var prime = 2777;
+var textArray = fs.readFileSync(path).toString().split("\n");
+longFinder(textArray, string, prime);
