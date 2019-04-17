@@ -114,4 +114,5 @@ var arr = ["a", "ab", "ed"];
 var text = 'aababced';
 var k = arr.length;
 
-findWordsAhoCor(text, arr, k);
+findWordsAhoCor(text, arr, k);//Очень сильно хочу спать, так что комментариев не будет, копайтесь сами
+//(￣ρ￣)..zzZZ (￣ρ￣)..zzZZ (￣ρ￣)..zzZZ (￣ρ￣)..zzZZ (￣ρ￣)..zzZZ (￣ρ￣)..zzZZ (￣ρ￣)..zzZZ 
