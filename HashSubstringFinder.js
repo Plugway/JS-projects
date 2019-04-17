@@ -1,8 +1,8 @@
 "use strict";
 
-const  maxChar = 1; //Крайне загадочная переменная. Действительно хз зачем она...
+const  maxChar = 1;
 
-function rabinKarpSearch(text, strToFind, prime, enabledFunctions, additionalNum)   //Коренная функция
+function rabinKarpSearch(text, strToFind, prime, additionalNum)   //Коренная функция
 {
 /*text - строка, в которой ищем
 * strToFind - ну тут понятно все
@@ -10,8 +10,6 @@ function rabinKarpSearch(text, strToFind, prime, enabledFunctions, additionalNum
 * enabledFunctions - включает вывод инфы в консоль прямо из этой функции
 * additionalNum - добавляет это число если сравниваем несколько строк и !enabledFunctions
 * */
-    if (enabledFunctions)               //Замер времени
-        var t = new Date();
     var textLen = text.length;
     var stringLen = strToFind.length;
     var comparisonCounter = 0, collisionCounter = 0;    //Счетчики
@@ -42,10 +40,7 @@ function rabinKarpSearch(text, strToFind, prime, enabledFunctions, additionalNum
             if(charIndex == stringLen)
             {
                 //на j месте начинается строка, совпадающая с паттерном
-                if (enabledFunctions)
-                    console.log('Найден на ' + j);
-                else
-                    console.log('Найден на ' + (j + additionalNum));
+                console.log('Найден на ' + (j + additionalNum));
             }
         }
 
@@ -56,20 +51,7 @@ function rabinKarpSearch(text, strToFind, prime, enabledFunctions, additionalNum
                 textHash += prime;
         }
     }
-    if (enabledFunctions)                                   //Выкидываем инфу
-    {
-        t = new Date() - t;
-        console.log("\nДлина текста: " + textLen + "\nДлина подстроки: " + stringLen);
-        console.log('Время работы: ' + t + ' мс');
-        console.log('Количество сравнений: ' + comparisonCounter);
-        console.log('Количество коллизий: ' + collisionCounter);
-        console.log('Всего вхождений: ' + (comparisonCounter - collisionCounter));
-    }
-    else                                                    //Вывод служебной инфы
-    {
-        return { 0:comparisonCounter, 1:collisionCounter};
-    }
-
+    return [comparisonCounter, collisionCounter];
 }
 
 function longFinder(textArray, strToFind, prime)        //Работает с массивами строк, используя rabinKarpSearch
@@ -95,15 +77,14 @@ function longFinder(textArray, strToFind, prime)        //Работает с м
     console.log('Всего вхождений: ' + (comparisonCounter - collisionCounter));
 }
 
-//Пример вызова коренной функции поиска
-
+//Пример вызова функции поиска для одной строки
 var string = 'ab';
 var text = 'ababbbacbeabab';
 var prime = 2777;
-rabinKarpSearch(text, string, prime, true);
+longFinder([text], string, prime);
 
 
-//Пример вызова функции, работающей с массивами строк, разделенными переносом строки
+//Пример вызова функции для массива строк, разделенных переносом строки
 var fs = require('fs');
 var path = "E:\\Scriptshit\\textDocs\\input.txt";
 var string = 'timer';
