@@ -30,7 +30,7 @@ function rabinKarpSearch(text, strToFind, prime, additionalNum)   //Коренн
             comparisonCounter++;
             for (charIndex = 0; charIndex < stringLen; charIndex++)
             {
-                if (text.charAt(j + charIndex) != strToFind.charAt(charIndex))
+                if (text[j + charIndex] != strToFind[charIndex])
                 {
                     collisionCounter++;
                     break;
@@ -40,7 +40,7 @@ function rabinKarpSearch(text, strToFind, prime, additionalNum)   //Коренн
             if(charIndex == stringLen)
             {
                 //на j месте начинается строка, совпадающая с паттерном
-                console.log('Найден на ' + (j + additionalNum));
+                console.log('Найден на промежутке [' + (j + additionalNum) + ' : ' + (j + additionalNum + strToFind.length - 1) + ']');
             }
         }
 
@@ -64,13 +64,14 @@ function longFinder(textArray, strToFind, prime)        //Работает с м
     for (var i = 0; i < textArray.length; i++)
     {
         var text = textArray[i];
-        resArr = rabinKarpSearch(text, strToFind, prime, false, additionalNum);
+        resArr = rabinKarpSearch(text, strToFind, prime, additionalNum);
         comparisonCounter += resArr[0];
         collisionCounter += resArr[1];
         additionalNum += (text.length + 1);
     }
     t1 = new Date() - t1;
-    console.log("\nДлина текста: " + (additionalNum - 1) + "\nДлина подстроки: " + strToFind.length);   //Вывод разной инфы
+    console.log('\nДлина текста: ' + (additionalNum - 1) + '\nДлина подстроки для поиска: ' + strToFind.length);   //Вывод разной инфы
+    console.log('Подстрока: ' + strToFind);
     console.log('Время работы: ' + t1 + ' мс');
     console.log('Количество сравнений: ' + comparisonCounter);
     console.log('Количество коллизий: ' + collisionCounter);
@@ -78,16 +79,19 @@ function longFinder(textArray, strToFind, prime)        //Работает с м
 }
 
 //Пример вызова функции поиска для одной строки
+/*
 var string = 'ab';
-var text = 'ababbbacbeabab';
+var text = ['ababbbacbeabab'];
 var prime = 2777;
-longFinder([text], string, prime);
-
+longFinder(text, string, prime);
+*/
 
 //Пример вызова функции для массива строк, разделенных переносом строки
+/*
 var fs = require('fs');
-var path = "E:\\Scriptshit\\textDocs\\input.txt";
-var string = 'timer';
+var path = 'E:\\Scriptshit\\textDocs\\input.txt';
+var string = 'wireless';
 var prime = 2777;
-var textArray = fs.readFileSync(path).toString().split("\n");
+var textArray = fs.readFileSync(path).toString().split('\n');
 longFinder(textArray, string, prime);
+*/
