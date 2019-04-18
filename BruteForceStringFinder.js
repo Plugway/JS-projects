@@ -1,22 +1,43 @@
 "use strict";
 
+function findShortestIndex(strArr)      //Выводит индекс первой кратчайшей строки в массиве строк
+{
+    var minLen = 10000000;
+    var minLenIndex = 0;
+    for (var s in strArr)
+    {
+        if (strArr[s].length < minLen)
+        {
+            minLen = strArr[s].length;
+            minLenIndex = s;
+        }
+    }
+    return minLenIndex;
+}
+
 function bruteFinder(text, strToFind, additionalNum)
 {
     var comparisonCounter = 0;
     var entryCounter = 0;
-    for (var i = 0; i < text.length - strToFind.length + 1; i++)
+    for (var i = 0; i < text.length - strToFind[findShortestIndex(strToFind)].length + 1; i++)
     {
-        var counter = 0;
-        for (var j = 0; j < strToFind.length; j++)
+        for (var v in strToFind)
         {
-            comparisonCounter++;
-            if (text.charAt(i + j) == strToFind.charAt(j))
-                counter++;
-        }
-        if (counter == strToFind.length)
-        {
-            console.log('Найден на ' + (i+additionalNum));
-            entryCounter++;
+            var inner = strToFind[v];
+            if (i + inner.length > text.length)
+                continue;
+            var counter = 0;
+            for (var j = 0; j < inner.length; j++)
+            {
+                comparisonCounter++;
+                if (text[i + j] == inner[j])
+                    counter++;
+            }
+            if (counter == inner.length)
+            {
+                console.log('Найден ' + inner + ' на промежутке [' + (i+additionalNum) + ' : ' + (i + additionalNum + inner.length - 1) + ']');
+                entryCounter++;
+            }
         }
     }
     return [comparisonCounter, entryCounter];
@@ -38,17 +59,24 @@ function bruteFinderLong(textArray, strToFind)
         additionalNum += (text.length + 1);
     }
     t1 = new Date() - t1;
-    console.log("\nДлина текста: " + (additionalNum - 1) + "\nДлина подстроки: " + strToFind.length);   //Вывод разной инфы
-    console.log('Время работы: ' + t1 + ' мс');
+    console.log("\nДлина текста: " + (additionalNum - 1) + "\nКоличество ключевых слов: " + strToFind.length);   //Вывод разной инфы
+    console.log('\nСлово:Длина');
+    for (var n in strToFind)
+    {
+        console.log(strToFind[n] + ':' + strToFind[n].length);
+    }
+    console.log('\nВремя работы: ' + t1 + ' мс');
     console.log('Количество сравнений: ' + comparisonCounter);
     console.log('Всего вхождений: ' + entryCounter);
 }
+//Поиск по текстовому файлу
 var fs = require('fs');
 var path = "E:\\Scriptshit\\textDocs\\input.txt";
-var string = 'timer';
+var string = ['loh'];
 var textArray = fs.readFileSync(path).toString().split("\n");
 bruteFinderLong(textArray, string);
 
-var string = 'ab';
-var text = 'ababbbacbeabab';
-bruteFinderLong([text], string);
+//Поиск по строке
+var stringArr = ['ab', 'a', 'acb'];
+var text = ['ababbbacbeabab'];
+bruteFinderLong(text, stringArr);
