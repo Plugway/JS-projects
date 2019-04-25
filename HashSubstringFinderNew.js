@@ -17,7 +17,7 @@ function rabinKarpSearch(text, strToFind, prime, additionalNum, outCounter)   //
     var stringLen = strToFind.length;
     var comparisonCounter = 0, collisionCounter = 0;    //Счетчики
     var charIndex, stringHash = 0, textHash = 0; //Нужно для корректной работы
-    //var power = Math.floor(Math.log(s)/Math.log(2));
+    //var power = Math.floor(Math.log(prime)/Math.log(2));
     var someNum = getRandom(1, prime - 2);       //Math.pow(2, getRandom(1, power));
     var powedSomeNum = Math.pow(someNum, stringLen - 1);
 
