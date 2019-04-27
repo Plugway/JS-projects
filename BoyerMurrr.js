@@ -1,47 +1,44 @@
+"use strict";
 
 const CMAX = 256;
 
-function badCharHeuristic(str, size, badChar)
+function badCharHeuristic(strToFind, strToFindSize, badChars)
 {
     for (var i = 0; i < CMAX; i++)
-        badChar[i] = -1;
-    for (i = 0; i < size; i++)
-        badChar[str.charCodeAt(i)] = i;
+        badChars[i] = -1;
+    for (i = 0; i < strToFindSize; i++)
+        badChars[strToFind.charCodeAt(i)] = i;
 }
 
-function search(txt, pat)
+function search(text, strToFind)
 {
-    var m = pat.length;
-    var n = txt.length;
+    var m = strToFind.length;
+    var n = text.length;
 
-    var badChar = [CMAX];
+    var badChars = [CMAX];
 
-    badCharHeuristic(pat, m, badChar);
+    badCharHeuristic(strToFind, m, badChars);
 
-    var s = 0;
-
-    while (s <= n - m)
+    for (var s = 0; s <= n - m;)
     {
-        var j = m-1;
-
-        while (j >= 0 && pat[j] == txt[s + j])
-        {
-            j--;
-        }
+        for (var j = m - 1; j >= 0 && strToFind[j] == text[s + j]; j--){}
 
         if (j < 0)
         {
-            console.log("Patterns occur at shift = " + s);
+            //console.log("Found at " + s);
+            outArr.push(s);
             if (s+m < n)
-                s += m - badChar[txt.charCodeAt(s+m)];
+                s += m - badChars[text.charCodeAt(s+m)];
             else
                 s += 1;
         }
         else
-            s += Math.max(1, j - badChar[txt.charCodeAt(s+j)]);
+            s += Math.max(1, j - badChars[text.charCodeAt(s+j)]);
     }
 }
 
+var outArr = [];
 var text = 'abcccsba';
 var strToFind = 'sb';
 search(text, strToFind);
+console.log(outArr);
