@@ -10,31 +10,24 @@ function badCharHeuristic(strToFind, strToFindSize, badChars)
         badChars[strToFind.charCodeAt(i)] = i;
 }
 
-function preprocessSuffixHeuristic(shift, bpos, strToFind, m)
+function suffixHeuristic(shift, bpos, strToFind, m)
 {
     var i = m;
     var j = m + 1;
-
     bpos[i] = j;
-
     while (i > 0)
     {
-        while (j <= m && strToFind[i - 1] != strToFind[j - 1])
+        while(j <= m && strToFind[i - 1] != strToFind[j - 1])
         {
             if (shift[j] == 0)
                 shift[j] = j - i;
             j = bpos[j];
         }
-
         i--;
         j--;
         bpos[i] = j;
     }
-}
-
-function preprocessCase2(shift, bpos, strToFind, m)
-{
-    var i, j;
+    //------------------------
     j = bpos[0];
     for(i = 0; i <= m; i++)
     {
@@ -49,18 +42,14 @@ function search(text, strToFind)
 {
     var m = strToFind.length;
     var n = text.length;
-
     var bpos = [m + 1];
     var shift = [m + 1];
 
     for (var i = 0; i < m + 1; i++)
         shift[i] = 0;
-
-    preprocessSuffixHeuristic(shift, bpos, strToFind, m);
-    preprocessCase2(shift, bpos, strToFind, m);
+    suffixHeuristic(shift, bpos, strToFind, m);
 
     var badChars = [CMAX];
-
     badCharHeuristic(strToFind, m, badChars);
 
     for (var s = 0; s <= n - m;)
