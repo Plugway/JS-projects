@@ -112,3 +112,4 @@ function runHashNew(string, path)
 }
 var string = 'work';
 var path = 'E:\\Scriptshit\\textDocs\\input.txt';
+ 
