@@ -171,4 +171,4 @@ function runAutomatone(stringArr, path)
 }
 
 runAutomatone(['work'], 'E:\\Scriptshit\\textDocs\\input.txt');
-// - 'a'.charCodeAt(0)
+// - 'a'.charCodeAt(0) 
