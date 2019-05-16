@@ -145,18 +145,34 @@ function toBinary(str)
     return out;
 }
 
-var text = 'deliberations13oath8923h89H*(#@H*($Y@*)34-3jr-923jawed';
+function f(str)
+{
+    var outStr = '';
+    for (var i = 0; i < str.length; i+=8)
+    {
+        outStr += String.fromCharCode(parseInt(str.substr(i, 8),2));
+    }
+    return outStr;
+}
+
+var fs = require('fs');
+var path = 'E:\\Scriptshit\\textDocs\\input4.txt';
+var text = fs.readFileSync(path).toString();
+//var text = 'deliberations13oath8923h89H*(#@H*($Y@*)34-3jr-923jawed';
 var huff = new HuffmanEncoding(text);
 huff.inspect_encoding();
 var v = toBinary(text);
 var e = huff.encode(text);
 var p = Math.round ((1 - e.length/v.length)*10000)/100;
-console.log('Input: ' + text);
-console.log('Encoded: ' + e);
-console.log('Non encoded: ' + v);
-console.log('Encoded length: ' + e.length);
-console.log('Non encoded length: ' + v.length);
+//console.log('Input: ' + text);
+//console.log('Encoded: ' + e);
+console.log('Encoded: ' + f(e));
+//console.log('Non encoded: ' + v);
+//console.log('Encoded length: ' + e.length);
+//var abc = '1011101101100111111011011101101011100111010111110001011001111011001001000000100011101011110110010011110011000111011001001111100001011110010100010000110000101111001010011101001000001011101010000100111111100010001101101111101111001100010001001101000011010111';
 console.log('Huffman more efficient by ' + (isNaN(p) ? 0 : p) + '%');
 var t = huff.decode(e);
-console.log('Decoded: ' + t);
+console.log('Text length: ' + text.length);
+console.log('Decoded length: ' + t.length);
+//console.log('Decoded: ' + t);
 console.log("Input and decoded messages match? " + (text == t ? 'Yes' : 'No'));
