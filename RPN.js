@@ -74,8 +74,37 @@ function expandInput(input)
             var postfix = input.substring(i+stringToReplace.length);
             input = prefix + stringToReplace2 + postfix;
         }
+        if (input[i] == '-' &&
+            !IsDigit(input[i-1]) &&
+            input[i-1] != ')' &&
+            input[i+1] == '(')
+        {
+            var number = '';
+            var t = i;
+            var stack = ['('];
+            var flag = true;
+            while (stack.length != 0)
+            {
+                if (flag)
+                {
+                    stack.pop();
+                    flag = false;
+                }
+                if (input[t+1] == '(')
+                    stack.push('(');
+                if (input[t+1] == ')')
+                    stack.pop();
+                number += input[t+1];
+                t++;
+            }
+            var stringToReplace = `-${number}`;
+            var stringToReplace2 = `(0-${number})`;
+            var prefix = input.substring(0, i);
+            var postfix = input.substring(i+stringToReplace.length);
+            input = prefix + stringToReplace2 + postfix;
+        }
     }
-    console.log(input);
+    //console.log(input);
     return input;
 }
 
@@ -180,7 +209,7 @@ function minimizeOutput(output)
         var number = '';
         if (output[i] == '0' &&
             (output[i+2] == '-')&&
-            (IsDigit(output[i+4])))
+            (IsDigit(output[i+4]) || output[i+4] == '('))
         {
             var replaceStr = '';
             var t = i;
@@ -219,7 +248,7 @@ function toInfix(tokens) {
     return minimizeOutput(stack[0].toString());
 }
 
-var infix = '-33*33*(-33)';
+var infix = '-(-(2)*5 + 3)';
 var postfix = toPostfix(infix);
 console.log('Input: ' + infix);
 console.log('Postfix: ' + postfix);
