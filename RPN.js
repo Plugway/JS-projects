@@ -71,7 +71,6 @@ function expandInput(input)
             input = input.replace(`-${number}`, `(0-${number})`);
         }
     }
-    console.log(input);
     return input;
 }
 
