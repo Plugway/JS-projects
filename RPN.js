@@ -38,10 +38,47 @@ function GetAssociativity(c)
     else
         return 'none';
 }
+function expandInput(input)
+{
+    for (var i = 0; i < input.length; i++)
+    {
+        if (input[i] == '-' && input[i+1] == '-')
+        {
+            var v = i;
+            var count = '';
+            while (input[v] == '-')
+            {
+                count += input[v++];
+            }
+            if (count.length%2)
+                input = input.replace(count.substr(0, count.length - 2), '-');
+            else if (IsDigit(input[i-1])|| input[i-1] == ')')
+                input = input.replace(count, '+');
+            else
+                input = input.replace(count, '');
+        }
+        if (input[i] == '-' &&
+            !IsDigit(input[i-1]) &&
+            input[i-1] != ')' &&
+            (IsDigit(input[i+1])))
+        {
+            var number = '';
+            var t = i;
+            while (IsDigit(input[t+1]))
+            {
+                number += input[++t];
+            }
+            input = input.replace(`-${number}`, `(0-${number})`);
+        }
+    }
+    console.log(input);
+    return input;
+}
 
 function toPostfix(input)
 {
     input = input.replace(/\s+/g, '');
+    input = expandInput(input);
     var stack = [];
     var token;
     var postfix = '';
@@ -132,6 +169,36 @@ class InfixNode {
         else return result;
     }
 }
+function minimizeOutput(output)
+{
+    for (var i = 0; i < output.length; i++)
+    {
+        var number = '';
+        if (output[i] == '0' &&
+            (output[i+2] == '-')&&
+            (IsDigit(output[i+4])))
+        {
+            var replaceStr = '';
+            var t = i;
+            while (IsDigit(output[t+4]))
+            {
+                number += output[t+4];
+                t++;
+            }
+            if (output[i-2] == '-')
+            {
+                replaceStr = `+ ${number}`;
+                output = output.replace(`- 0 - ${number}`, replaceStr);
+            }
+            else
+            {
+                replaceStr = `-${number}`;
+                output = output.replace(`0 - ${number}`, replaceStr);
+            }
+        }
+    }
+    return output;
+}
 function toInfix(tokens) {
     const stack = [];
     //console.log(`input = ${tokens}`);
@@ -144,10 +211,12 @@ function toInfix(tokens) {
         //console.log(`read ${token}, stack = [${stack.join(", ")}]`);
     }
     if (stack.length !== 1) throw Error("stack error " + stack);
-    return stack[0];
+
+    return minimizeOutput(stack[0].toString());
 }
 
-var infix = '3-5*(8+4)';
+var infix = '13*(435+44)-34';
 var postfix = toPostfix(infix);
-console.log(postfix);
-console.log(toInfix(postfix).toString());
+console.log('Input: ' + infix);
+console.log('Postfix: ' + postfix);
+console.log('Infix: ' + toInfix(postfix));
