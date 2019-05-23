@@ -68,9 +68,14 @@ function expandInput(input)
             {
                 number += input[++t];
             }
-            input = input.replace(`-${number}`, `(0-${number})`);
+            var stringToReplace = `-${number}`;
+            var stringToReplace2 = `(0-${number})`;
+            var prefix = input.substring(0, i);
+            var postfix = input.substring(i+stringToReplace.length);
+            input = prefix + stringToReplace2 + postfix;
         }
     }
+    console.log(input);
     return input;
 }
 
@@ -214,7 +219,7 @@ function toInfix(tokens) {
     return minimizeOutput(stack[0].toString());
 }
 
-var infix = '13*(435+44)-34';
+var infix = '-33*33*(-33)';
 var postfix = toPostfix(infix);
 console.log('Input: ' + infix);
 console.log('Postfix: ' + postfix);
